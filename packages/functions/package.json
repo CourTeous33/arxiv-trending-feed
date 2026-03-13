@@ -1,0 +1,15 @@
+{
+  "name": "@arxiv-feed/functions",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "@arxiv-feed/core": "workspace:*",
+    "sst": "^3.14.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^22",
+    "typescript": "^5.7.0"
+  }
+}

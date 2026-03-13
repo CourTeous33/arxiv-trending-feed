@@ -1,0 +1,9 @@
+node_modules/
+.sst/
+dist/
+*.js
+*.d.ts
+*.js.map
+*.d.ts.map
+!sst.config.ts
+.env

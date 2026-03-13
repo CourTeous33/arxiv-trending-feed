@@ -1,0 +1,14 @@
+{
+  "name": "arxiv-trading-feed",
+  "private": true,
+  "version": "0.0.1",
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "sst": "^3.14.2",
+    "@types/node": "^22"
+  },
+  "scripts": {
+    "dev": "sst dev",
+    "deploy": "sst deploy"
+  }
+}
