@@ -292,6 +292,20 @@ export default function App() {
         <div className="loading">No papers found</div>
       )}
 
+      <div className="star-history">
+        <a
+          href={`https://star-history.com/#${GITHUB_REPO}&Date`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src={`https://api.star-history.com/svg?repos=${GITHUB_REPO}&type=Date`}
+            alt="Star History Chart"
+            className="star-history-img"
+          />
+        </a>
+      </div>
+
       <footer className="footer">
         <span>
           &copy; {new Date().getFullYear()}{" "}

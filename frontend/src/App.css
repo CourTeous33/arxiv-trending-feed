@@ -252,6 +252,18 @@ a.pop-badge.github:hover {
   color: var(--text-tertiary);
 }
 
+/* Star History */
+.star-history {
+  margin-top: 32px;
+  padding: 16px 0;
+  text-align: center;
+}
+.star-history-img {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
 /* Footer */
 .footer {
   display: flex;
