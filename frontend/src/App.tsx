@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
+const GITHUB_REPO = "CourTeous33/arxiv-trending-feed";
 
 interface Paper {
   arxiv_id: string;
@@ -159,6 +160,14 @@ export default function App() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<"trending" | "latest">("trending");
+  const [repoStars, setRepoStars] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${GITHUB_REPO}`)
+      .then((r) => r.json())
+      .then((data) => setRepoStars(data.stargazers_count ?? null))
+      .catch(() => {});
+  }, []);
 
   const fetchPapers = useCallback(
     async (token?: string | null) => {
@@ -221,6 +230,14 @@ export default function App() {
           <a href={`${API_URL}/rss`} target="_blank" rel="noopener noreferrer">
             RSS Feed
           </a>
+          <a
+            href={`https://github.com/${GITHUB_REPO}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="github-star-btn"
+          >
+            &#9733; Star{repoStars !== null ? ` (${repoStars})` : ""}
+          </a>
         </div>
       </header>
 
@@ -274,6 +291,23 @@ export default function App() {
       {!loading && !error && papers.length === 0 && (
         <div className="loading">No papers found</div>
       )}
+
+      <footer className="footer">
+        <span>
+          &copy; {new Date().getFullYear()}{" "}
+          <a href="https://y33.ch/" target="_blank" rel="noopener noreferrer">
+            y33.ch
+          </a>
+        </span>
+        <span className="footer-sep">&middot;</span>
+        <a
+          href={`https://github.com/${GITHUB_REPO}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+      </footer>
     </div>
   );
 }
