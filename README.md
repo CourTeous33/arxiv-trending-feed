@@ -1,10 +1,5 @@
 # ArXiv Trending Paper Feed
 
-[![GitHub stars](https://img.shields.io/github/stars/CourTeous33/arxiv-trending-feed?style=social)](https://github.com/CourTeous33/arxiv-trending-feed/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/CourTeous33/arxiv-trending-feed?style=social)](https://github.com/CourTeous33/arxiv-trending-feed/network)
-[![GitHub issues](https://img.shields.io/github/issues/CourTeous33/arxiv-trending-feed)](https://github.com/CourTeous33/arxiv-trending-feed/issues)
-[![CI](https://github.com/CourTeous33/arxiv-trending-feed/actions/workflows/ci.yml/badge.svg)](https://github.com/CourTeous33/arxiv-trending-feed/actions/workflows/ci.yml)
-
 Auto-ingests AI/ML papers from arXiv, scores them using community signals (HuggingFace upvotes, GitHub stars, Semantic Scholar citations), summarizes with Claude, and serves as a scrollable feed with RSS support.
 
 **Live**: https://d3pe9eu5y006yf.cloudfront.net
@@ -159,11 +154,3 @@ HourlyScoring (cron every 1h)
 API Gateway ──► Lambda handlers ──► DynamoDB
 Frontend (Vite + React) ──► CloudFront ──► S3
 ```
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=CourTeous33/arxiv-trending-feed&type=Date)](https://star-history.com/#CourTeous33/arxiv-trending-feed&Date)
-
-## License
-
-Built by [y33.ch](https://y33.ch/)
