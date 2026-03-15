@@ -25,7 +25,6 @@ Pipeline: `arXiv API → Ingest → Dedup → Summarize (Claude) → Score (HF +
 ```bash
 # Development
 sst dev                        # Local dev with Live Lambda
-sst dev --stage staging        # Dev against staging environment
 
 # Testing
 bun run test                   # Run all unit tests
@@ -81,7 +80,7 @@ sst console                    # Open SST web dashboard
 ### Key Patterns
 
 - **Resource Linking**: SST links resources to Lambda functions. Access via `import { Resource } from "sst"` — e.g., `Resource.Papers.name`.
-- **Stages**: Each stage (dev/staging/prod) gets completely isolated resources.
+- **Stages**: Each stage (dev/prod) gets isolated resources. Deploy to prod by default.
 - **Shared utilities**: `packages/core/src/utils.ts` exports `sleep()` and `daysSince()` — use these instead of defining inline.
 - **Test helpers**: `packages/functions/tests/helpers.ts` exports `makePaper()` and `makeEvent()` — use for all handler tests.
 
