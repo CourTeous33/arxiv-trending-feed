@@ -23,27 +23,30 @@ export async function summarizePaper(
 
   const message = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 300,
+    max_tokens: 500,
     messages: [
       {
         role: "user",
-        content: `You are a fintwit (financial Twitter) writer who summarizes academic papers in a casual, engaging tone. Given this paper, write:
+        content: `You are a tech Twitter writer who summarizes AI research papers in a casual, engaging tone. Given this paper, write:
 
-1. A tweet-length summary (max 280 chars) — punchy, no jargon, fintwit style
-2. A "why it matters" blurb (1-2 sentences) for traders/quants
+1. A tweet-length summary (max 280 chars) — punchy, no jargon, accessible style
+2. A "why it matters" blurb (1-2 sentences) for AI researchers and practitioners
 
 Paper title: ${title}
 
 Abstract: ${abstract}
 
-Respond in JSON format:
+Respond with ONLY raw JSON, no markdown fences or other text:
 {"summary": "...", "why_it_matters": "..."}`,
       },
     ],
   });
 
-  const text =
+  let text =
     message.content[0].type === "text" ? message.content[0].text : "";
+
+  // Strip markdown code fences if present
+  text = text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
 
   try {
     const parsed = JSON.parse(text);

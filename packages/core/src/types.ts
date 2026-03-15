@@ -13,6 +13,14 @@ export interface Paper {
   why_it_matters: string;
   tier: "hot" | "warm" | "cold";
   trending_score: number;
+  citation_count: number;
+  influential_citation_count: number;
+  reference_count: number;
+  hf_upvotes: number;
+  hf_comments: number;
+  github_stars: number;
+  github_url: string;
+  citation_updated_at: string;
   ingested_at: string;
 }
 

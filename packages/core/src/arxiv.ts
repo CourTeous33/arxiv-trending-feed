@@ -1,55 +1,14 @@
 import { XMLParser } from "fast-xml-parser";
 import type { ArxivEntry } from "./types.js";
+import { sleep } from "./utils.js";
 
 const ARXIV_API_URL = "http://export.arxiv.org/api/query";
 
-const CATEGORIES = ["q-fin.*", "cs.AI", "cs.LG", "stat.ML"];
-
-const FINANCE_KEYWORDS = [
-  "trading",
-  "portfolio",
-  "financial",
-  "market",
-  "stock",
-  "hedge",
-  "risk",
-  "asset",
-  "pricing",
-  "investment",
-  "alpha",
-  "volatility",
-  "options",
-  "derivatives",
-  "quantitative",
-  "quant",
-  "arbitrage",
-  "algorithmic trading",
-  "order book",
-  "execution",
-  "sentiment",
-  "forecasting",
-  "prediction",
-  "returns",
-  "equity",
-  "fixed income",
-  "crypto",
-  "defi",
-  "reinforcement learning",
-  "time series",
-  "transformer",
-  "llm",
-  "large language model",
-  "nlp",
-  "natural language",
-];
+const CATEGORIES = ["cs.AI", "cs.LG", "stat.ML", "cs.CL", "cs.CV"];
 
 function buildQuery(): string {
   const catQuery = CATEGORIES.map((c) => `cat:${c}`).join("+OR+");
   return `(${catQuery})`;
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function fetchArxivPapers(
@@ -59,9 +18,18 @@ export async function fetchArxivPapers(
   const query = buildQuery();
   const url = `${ARXIV_API_URL}?search_query=${query}&start=${start}&max_results=${maxResults}&sortBy=submittedDate&sortOrder=descending`;
 
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`arXiv API error: ${response.status} ${response.statusText}`);
+  let response: Response | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await sleep(5000 * attempt);
+    response = await fetch(url);
+    if (response.status === 429) {
+      console.warn(`arXiv rate limited, retrying (attempt ${attempt + 1}/3)...`);
+      continue;
+    }
+    break;
+  }
+  if (!response || !response.ok) {
+    throw new Error(`arXiv API error: ${response?.status} ${response?.statusText}`);
   }
 
   const xml = await response.text();
@@ -102,16 +70,6 @@ function parseEntry(entry: any): ArxivEntry {
   };
 }
 
-export function isFinanceRelated(entry: ArxivEntry): boolean {
-  // All q-fin papers are relevant
-  if (entry.categories.some((c) => c.startsWith("q-fin"))) {
-    return true;
-  }
-
-  const text = `${entry.title} ${entry.summary}`.toLowerCase();
-  return FINANCE_KEYWORDS.some((kw) => text.includes(kw));
-}
-
 export function extractTags(entry: ArxivEntry): string[] {
   const tags: string[] = [];
   const text = `${entry.title} ${entry.summary}`.toLowerCase();
@@ -121,14 +79,12 @@ export function extractTags(entry: ArxivEntry): string[] {
     "reinforcement-learning": ["reinforcement learning", "rl agent", "policy gradient"],
     nlp: ["nlp", "natural language", "sentiment", "text", "llm", "large language model"],
     "time-series": ["time series", "forecasting", "temporal"],
-    "portfolio-optimization": ["portfolio", "allocation", "optimization"],
-    "risk-management": ["risk", "var ", "value at risk", "hedging"],
-    "market-microstructure": ["order book", "market making", "execution", "microstructure"],
-    crypto: ["crypto", "bitcoin", "ethereum", "defi", "blockchain"],
-    options: ["option", "derivative", "volatility surface", "black-scholes"],
-    "high-frequency": ["high frequency", "hft", "low latency", "tick data"],
-    "alternative-data": ["alternative data", "satellite", "social media", "news"],
+    "computer-vision": ["image", "object detection", "segmentation", "vision", "cnn", "diffusion model"],
+    robotics: ["robot", "manipulation", "locomotion", "autonomous"],
     "generative-ai": ["generative", "gpt", "llm", "large language model", "diffusion"],
+    optimization: ["optimization", "gradient", "convergence", "loss function"],
+    "graph-neural-networks": ["graph neural", "gnn", "knowledge graph"],
+    safety: ["alignment", "safety", "hallucination", "jailbreak", "red team"],
   };
 
   for (const [tag, keywords] of Object.entries(tagKeywords)) {
@@ -138,11 +94,16 @@ export function extractTags(entry: ArxivEntry): string[] {
   }
 
   // Add arxiv category-based tags
+  const categoryTagMap: Record<string, string> = {
+    "cs.AI": "ai",
+    "cs.LG": "machine-learning",
+    "stat.ML": "statistics",
+    "cs.CL": "nlp",
+    "cs.CV": "computer-vision",
+  };
   for (const cat of entry.categories) {
-    if (cat.startsWith("q-fin")) tags.push("quantitative-finance");
-    if (cat === "cs.AI") tags.push("ai");
-    if (cat === "cs.LG") tags.push("machine-learning");
-    if (cat === "stat.ML") tags.push("statistics");
+    const mapped = categoryTagMap[cat];
+    if (mapped) tags.push(mapped);
   }
 
   return [...new Set(tags)];

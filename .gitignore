@@ -7,3 +7,4 @@ dist/
 *.d.ts.map
 !sst.config.ts
 .env
+*.csv

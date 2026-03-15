@@ -3,7 +3,7 @@
 export default $config({
   app(input) {
     return {
-      name: "arxiv-trading-feed",
+      name: "arxiv-trending-feed",
       removal: input?.stage === "prod" ? "retain" : "remove",
       home: "aws",
       providers: {
@@ -91,8 +91,21 @@ export default $config({
       },
     });
 
+    // Frontend
+    const web = new sst.aws.StaticSite("Web", {
+      path: "frontend/",
+      build: {
+        command: "bun run build",
+        output: "dist",
+      },
+      environment: {
+        VITE_API_URL: api.url,
+      },
+    });
+
     return {
       api: api.url,
+      web: web.url,
     };
   },
 });

@@ -29,8 +29,8 @@ export const handler: APIGatewayProxyHandlerV2 = async () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>ArXiv AI Trading Paper Feed</title>
-    <description>Latest AI/ML papers relevant to trading and quantitative finance</description>
+    <title>ArXiv AI Trending Paper Feed</title>
+    <description>Latest trending AI/ML papers from arXiv</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${items}

@@ -1,14 +1,20 @@
 {
-  "name": "arxiv-trading-feed",
+  "name": "arxiv-trending-feed",
   "private": true,
   "version": "0.0.1",
   "workspaces": ["packages/*"],
   "devDependencies": {
+    "@types/node": "^22",
+    "@vitest/coverage-v8": "^4.1.0",
     "sst": "^3.14.2",
-    "@types/node": "^22"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   },
   "scripts": {
     "dev": "sst dev",
-    "deploy": "sst deploy"
+    "deploy": "sst deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   }
 }
